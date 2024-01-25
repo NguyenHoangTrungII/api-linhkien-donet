@@ -365,3 +365,6 @@ FodyWeavers.xsd
 
 ##Ignore Migration file
 /Migrations/
+
+##Ignore Migration file
+/mailssave/

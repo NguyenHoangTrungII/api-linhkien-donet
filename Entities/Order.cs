@@ -5,7 +5,6 @@ namespace linhkien_donet.Entities
 {
     public class Order
     {
-        [Key]
         public int Id { get; set; }
 
         public string Status { get; set; }

@@ -62,11 +62,11 @@ namespace linhkien_donet.Services
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnpSecureHash =
-                collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
+                collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; 
             var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
 
             var checkSignature =
-                vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
+                vnPay.ValidateSignature(vnpSecureHash, hashSecret); 
 
             if (!checkSignature)
                 return new PaymentResponseModel()

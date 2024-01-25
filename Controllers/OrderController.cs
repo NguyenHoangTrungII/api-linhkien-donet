@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace linhkien_donet.Controllers
 {
     [Route("api/[controller]")]
-    //[ApiController]
+    [ApiController]
     public class OrderController :Controller
     {
         private readonly IVnPayService _vnPayService;
@@ -20,36 +20,41 @@ namespace linhkien_donet.Controllers
             _orderRepository = orderRepository;
         }
 
-        [HttpPost("create")]
-        public IActionResult CreatePaymentUrl(PaymentInformationModel model)
+        [HttpPost("paymentURL")]
+        [Authorize(Roles ="USER")]
+        public IActionResult CreatePaymentUrl([FromBody] PaymentInformationModel model)
         {
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
 
             return Json(url);
         }
 
-        [HttpGet("payment-callback")]
-        public IActionResult PaymentCallback()
+        [HttpGet("paymentCallback")]
+        [Authorize(Roles = "USER")]
+
+        public IActionResult PaymentCallback( )
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
 
             return Json(response);
         }
 
-        [HttpPost("create-order")]
-        //[Authorize(Roles = "Khách Hàng,Quản Trị Viên")]
+        [HttpPost("createOrder")]
+        [Authorize(Roles = "USER, ADMIN")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var result = await _orderRepository.CreateOrder(request);
-            return Ok(result);
+            var result = await _orderRepository.CreateOrder(userId, request);
+            return Ok(request);
         }
 
-        [HttpPost("get-order")]
+        [HttpPost("getOrder")]
         [Authorize(Roles = "USER,ADMIN")]
         public async Task<IActionResult> getOrderPaging([FromBody] PagingOrderRequest request)
         {
@@ -61,6 +66,21 @@ namespace linhkien_donet.Controllers
             }
 
             var result = await _orderRepository.getOrderPaging(request, userId);
+            return Ok(result);
+        }
+
+        [HttpPost("changeStatus")]
+        [Authorize(Roles = "USER,ADMIN")]
+        public async Task<IActionResult> UpdateStatusOrder([FromBody] UpdateStatusOrderRequest request)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _orderRepository.UpdateStatusOrder(request);
             return Ok(result);
         }
     }

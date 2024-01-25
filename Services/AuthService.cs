@@ -181,12 +181,12 @@ namespace linhkien_donet.Services
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            //var callbackUrl = $"https://website.com/resetpassword?userId={user.Id}&token={HttpUtility.UrlEncode(token)}";
+            var callbackUrl = $"https://website.com/resetpassword?userId={user.Id}&token={HttpUtility.UrlEncode(token)}";
             var emailContent = new EmailContent
             {
                 To = email,
                 Subject = "Resert Password",
-                Body = $"Please  use token : {token} to reset your password."
+                Body = $"Please  access to  {HttpUtility.UrlEncode(token)} & {user.Id} to reset your password."
             };
 
             var result  = await _emailService.SendMail(emailContent);
@@ -198,6 +198,79 @@ namespace linhkien_donet.Services
             }
 
             return new ApiSuccessResult<bool>(result.Message);
+        }
+
+        //public async Task<ApiResult<bool>> ResetPassword(string userId, string token, string newPassword)
+        //{
+        //    var user = await _userManager.FindByIdAsync(userId);
+
+        //    if (user == null || !await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token))
+        //    {
+        //        return new ApiFailResult<bool>("Invalid user or token.");
+        //    }
+
+        //    // Kiểm tra hết hạn của token
+        //    var tokenValidUntil = await _userManager.GetTokenExpirationAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword");
+
+        //    if (DateTime.Now > tokenValidUntil)
+        //    {
+        //        return new ApiFailResult<bool>("Token has expired. Please request a new password reset.");
+        //    }
+
+        //    // Thiết lập mật khẩu mới
+        //    var resetResult = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+        //    if (resetResult.Succeeded)
+        //    {
+        //        // Gửi thông báo hoặc thực hiện các bước khác sau khi đặt lại mật khẩu thành công.
+        //        return new ApiSuccessResult<bool>("Password reset successful.");
+        //    }
+        //    else
+        //    {
+        //        // Xử lý lỗi khi đặt lại mật khẩu không thành công.
+        //        return new ApiFailResult<bool>("Failed to reset password.");
+        //    }
+        //}
+
+
+        public async Task<ApiResult<bool>> ResetPassword(ResetPasswordRequest request)
+        {
+            var decodedToken = HttpUtility.UrlDecode(request.token);
+
+            var user = await _userManager.FindByIdAsync(request.userId ); // Thay thế bằng mã người dùng tương ứng
+
+            if (user == null)
+            {
+                return new ApiFailResult<bool>("User is not exists");
+            }
+
+            var isValidToken = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", decodedToken);
+
+            if (!isValidToken)
+            {
+                return new ApiFailResult<bool>("Something wrong ! pls try another time");
+
+            }
+
+            var resetResult = await _userManager.ResetPasswordAsync(user, decodedToken, request.newPassword);
+
+
+            if (resetResult.Succeeded)
+            {
+                return new ApiSuccessResult<bool>("Password reset successful.");
+            }
+            else
+            {
+                return new ApiFailResult<bool>("Failed to reset password.");
+            }
+
+        }
+
+
+        private string GetUserIdFromToken(string token)
+        {
+            var tokenService = new TokenService(_configuration);
+            return tokenService.GetUserIdFromToken(token);
         }
 
 

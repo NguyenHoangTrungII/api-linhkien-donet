@@ -17,7 +17,7 @@ namespace linhkien_donet.Interfaces
 
         Task<ApiResult<bool>> ProcessVNPayReturn(PaymentResponseModel response);
 
-        Task<ApiResult<bool>> CreateOrder(CreateOrderRequest response);
+        Task<ApiResult<bool>> CreateOrder(string userId, CreateOrderRequest response);
 
         Task<ApiResult<bool>> UpdateStatusOrder(UpdateStatusOrderRequest request );
 

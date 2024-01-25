@@ -3,6 +3,7 @@ using linhkien_donet.Entities;
 using linhkien_donet.Interfaces;
 using linhkien_donet.Models.AuthModels;
 using linhkien_donet.Models.EmailModels;
+using linhkien_donet.Validators.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,8 +24,6 @@ namespace linhkien_donet.Controllers
             _userManager = userManager;
         }
 
-
-        //Route ->seed-roles
         [HttpPost]
         [Route("seed-roles")]
         [Authorize(Roles = "ADMIN, OWNER")]
@@ -35,12 +34,20 @@ namespace linhkien_donet.Controllers
             return Ok(seerRoles);
         }
 
-        // Route -> Register
         [HttpPost]
         [Route("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterModel registerDto)
         {
+            var validator = new RegisterModelValidator();
+
+            var validationResult = validator.Validate(registerDto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             var registerResult = await _authService.RegisterAsync(registerDto);
 
             if (registerResult.isSuccess)
@@ -49,12 +56,22 @@ namespace linhkien_donet.Controllers
             return BadRequest(registerResult);
         }
 
-        // Route -> Login
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginModel loginDto)
         {
+
+
+            var validator = new LoginModelValidator();
+
+            var validationResult = validator.Validate(loginDto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             var loginResult = await _authService.LoginAsync(loginDto);
 
             if (loginResult.isSuccess)
@@ -63,7 +80,7 @@ namespace linhkien_donet.Controllers
             return Unauthorized(loginResult);
         }
 
-        // Route -> make user -> admin
+       
         [HttpPost]
         [Route("make-admin")]
         [Authorize(Roles = "ADMIN, OWNER")]
@@ -78,7 +95,6 @@ namespace linhkien_donet.Controllers
             return BadRequest(operationResult);
         }
 
-        // Route -> make user -> owner
         [HttpPost]
         [Route("make-owner")]
         [Authorize(Roles = "ADMIN, OWNER")]
@@ -92,9 +108,8 @@ namespace linhkien_donet.Controllers
             return BadRequest(operationResult);
         }
 
-        // Route -> make user -> owner
         [HttpPost]
-        [Route("Forgot-Password")]
+        [Route("forgot-password")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
@@ -112,6 +127,19 @@ namespace linhkien_donet.Controllers
 
             return BadRequest(operationResult);
 
+        }
+
+        [HttpPost]
+        [Route("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await _authService.ResetPassword(request);
+
+            if (result.isSuccess)
+                return Ok(result);
+
+            return Unauthorized(result);
         }
     }
     

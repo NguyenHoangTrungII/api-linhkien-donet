@@ -13,5 +13,8 @@ namespace linhkien_donet.Interfaces
 
         Task<ApiResult<bool>> ForgotPassword(string email);
 
+        Task<ApiResult<bool>> ResetPassword( ResetPasswordRequest request);
+
+
     }
 }

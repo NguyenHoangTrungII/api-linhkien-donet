@@ -19,12 +19,10 @@ namespace linhkien_donet.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CartController : Controller
     {
         private readonly ICartRepository _cartRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
 
         public CartController(ICartRepository cartRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
@@ -48,7 +46,7 @@ namespace linhkien_donet.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("add-to-cart/{ProductId}")]
+        [HttpPost("addToCart/{productId}")]
         [Authorize(Roles = ("USER"))]
 
         public async Task<IActionResult> AddToCart([FromRoute] int ProductId)
@@ -75,7 +73,7 @@ namespace linhkien_donet.Controllers
             
         }
 
-        [HttpPatch("items/{ProductId}")]
+        [HttpPatch("items/{productId}")]
         [Authorize(Roles = ("USER, OWER"))]
 
         public async Task<IActionResult> UpdateCart([FromRoute] int ProductId, [FromBody] UpdateProductCartRequest data)
@@ -102,7 +100,7 @@ namespace linhkien_donet.Controllers
             return BadRequest(result);
         }
 
-        [HttpDelete("items/{ProductId}")]
+        [HttpDelete("items/{productId}")]
         [Authorize(Roles ="USER, ADMIN")]
         public async Task<IActionResult> RemoveItemFromCart([FromRoute] int ProductId)
         {

@@ -5,7 +5,6 @@ namespace linhkien_donet.Entities
 {
     public class Images
     {
-        [Key]
         public int Id { get; set; }
         public string images { get; set; }
 

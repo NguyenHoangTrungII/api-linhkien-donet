@@ -9,10 +9,6 @@ namespace linhkien_donet.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
             builder.ToTable("ApplicationUser");
-            //builder.HasNoKey();
-
-           
-
 
             builder.HasOne(c => c.Cart)
                .WithOne(c => c.User)

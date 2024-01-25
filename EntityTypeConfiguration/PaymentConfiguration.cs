@@ -16,7 +16,7 @@ namespace linhkien_donet.EntityTypeConfiguration
 
             
 
-            builder.ToTable("Payments"); // Đặt tên bảng trong cơ sở dữ liệu
+            builder.ToTable("Payments"); 
         }
     }
 }

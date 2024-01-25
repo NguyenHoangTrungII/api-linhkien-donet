@@ -59,8 +59,7 @@ namespace _01_WEBAPI.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        [Authorize(Roles = (" OWER"))]
-
+        [Authorize(Roles = ("ADMIN, OWER"))]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryDto CategoryCreate)
         {
             if (CategoryCreate == null)
@@ -93,7 +92,7 @@ namespace _01_WEBAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = (" OWER"))]
+        [Authorize(Roles = ("ADMIN, OWER"))]
 
         public IActionResult UpdateCategory(int categoryId, [FromBody] CategoryDto updateCategory)
         {
@@ -125,7 +124,7 @@ namespace _01_WEBAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = (" OWER"))]
+        [Authorize(Roles = ("ADMIN, OWER"))]
 
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {

@@ -31,7 +31,5 @@ namespace linhkien_donet.Models.ProductModels
         [Required(ErrorMessage = "Not null")]
         public int BrandId { get; set; }
 
-
-        
     }
 }

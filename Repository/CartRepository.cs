@@ -210,46 +210,7 @@ namespace linhkien_donet.Repository
             }
 
                 var cartDto = _mapper.Map<CartDto>(cart);
-                
-
-                //var cartItem = _mapper.Map<List<Cart>>(cart.Items);
-
-                //var cartDto = _mapper.Map<CartDto>(cart);
-
-                //cartDto.Items = cartItem;
-
-                //var cartModel = new CartDto
-                //{
-                //    Items = cart.Items.Select(item => 
-                //    {
-                //        //ProductId = item.ProductId,
-                //        //Product = new ProductDto 
-                //        //{
-                //        //    Id = item.ProductId,
-                //        //    Name = item.Product.Name,
-                //        //    Price = item.Product.Price, 
-                //        //    OldPrice = item.Product.OldPrice,
-                //        //    Description = item.Product.Description,
-                //        //    StatusProduct = item.Product.StatusProduct,
-                //        //    Quantity = item.Product.Quantity,  
-                //        //    Images = item.Product.Images,
-                //        //},
-                //        //Quantity = item.Quantity
-
-                //        _mapper.Map<CartDetailDto>(item);
-                //    }).ToList()
-
-                //var CartItem = cart.Items.FirstOrDefault();
-
-                //if (CartItem != null) {
-                //    CartItem.Product = _mapper.Map<List<ProductDto>>(CartItem.Product);
-                //}
-
-                //cart.Items = _mapper.Map<List<CartDetailDto>>(CartItem);
-
-            
-
-
+         
             return new ApiSuccessResult<CartDto>(cartDto);
         }
             catch (Exception ex)

@@ -13,8 +13,6 @@ namespace _01_WEBAPI.Controllers
     [ApiController]
     public class BrandController : Controller
     {
-
-
         private readonly IBrandRepository _brandRepository;
         private readonly IMapper _mapper;
 
@@ -42,7 +40,7 @@ namespace _01_WEBAPI.Controllers
         }
 
 
-        [HttpGet("{BrandId}")]
+        [HttpGet("{brandId}")]
         [ProducesResponseType(200, Type = typeof(Brand))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetBrandById(int BrandId)

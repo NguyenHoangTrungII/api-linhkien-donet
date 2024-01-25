@@ -4,8 +4,7 @@ namespace linhkien_donet.Models.OrderModels
 {
     public class CreateOrderRequest
     {
-        [Required(ErrorMessage = "Not null")]
-        public string UserId { get; set; }
+        
 
         [Required(ErrorMessage = "Not null")]
         public string Status { get; set; }

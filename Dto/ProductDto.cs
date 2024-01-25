@@ -15,11 +15,8 @@ namespace _01_WEBAPI.Dto
         public int Quantity { get; set; }
         public string Description { get; set; }
         public int StatusProduct { get; set; }
-
         public int CategoryId { get; set; }
-
         public int BrandId { get; set; }
-
         public List<ImageDto> Images { get; set; }
 
     }

@@ -2,12 +2,10 @@ using _01_WEBAPI.Data;
 using _01_WEBAPI.Interfaces;
 using _01_WEBAPI.Models;
 using linhkien_donet.Entities;
-//using _01_WEBAPI.Repository;
 using linhkien_donet.Interfaces;
 using linhkien_donet.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-//using _01_WEBAPI.Respository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -19,7 +17,6 @@ using Microsoft.AspNetCore.Hosting;
 using _01_webapi.respository;
 using linhkien_donet.Models.EmailModels;
 using Microsoft.Extensions.Configuration;
-//using linhkien_donet.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 

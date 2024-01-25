@@ -11,6 +11,7 @@ namespace linhkien_donet.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProdudctRepository _produdctRepository;
@@ -21,6 +22,7 @@ namespace linhkien_donet.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllProduct()
         {
 
@@ -34,7 +36,7 @@ namespace linhkien_donet.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("byid/{productId}")]
+        [HttpGet("byId/{productId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductById([FromRoute] int productId)
         {
@@ -49,7 +51,7 @@ namespace linhkien_donet.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("byname/{name}")]
+        [HttpGet("byName/{name}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductByName([FromRoute] string name)
         {
@@ -78,7 +80,7 @@ namespace linhkien_donet.Controllers
         }
 
         [HttpPost("images")]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, OWER")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateProductImage([FromForm] CreateImagesModel request)
         {
@@ -91,8 +93,8 @@ namespace linhkien_donet.Controllers
             return Ok(result);
         }
 
-        [HttpPost("imagesbycloudinary")]
-        //[Authorize(Roles = "ADMIN")]
+        [HttpPost("imagesByCloudinary")]
+        [Authorize(Roles = "ADMIN, OWER")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateProductImageByCloundinary([FromForm] CreateImagesModel request)
         {
@@ -106,7 +108,7 @@ namespace linhkien_donet.Controllers
         }
 
         [HttpDelete("image/{id}")]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, OWER")]
         public async Task<IActionResult> DeleteProductImage(int id)
         {
             if (!ModelState.IsValid)
@@ -119,7 +121,7 @@ namespace linhkien_donet.Controllers
         }
 
         [HttpPost("product")]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, OWER")]
         //[Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductModel request)
         {
@@ -133,7 +135,7 @@ namespace linhkien_donet.Controllers
         }
 
         [HttpDelete("{productId}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN, OWER")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
             if (!ModelState.IsValid)
@@ -144,10 +146,5 @@ namespace linhkien_donet.Controllers
             var result = await _produdctRepository.DeleteProduct(productId);
             return Ok(result);
         }
-
-
-
-        
-
     }
 }

@@ -6,7 +6,6 @@ namespace linhkien_donet.Entities
 {
     public class CartDetail
     {
-        [Key]
         public int Id { get; set; }
         public int Quantity { get; set; }
 

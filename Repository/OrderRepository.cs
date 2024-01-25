@@ -52,7 +52,7 @@ namespace linhkien_donet.Repository
             }
         }
 
-        public async Task<ApiResult<bool>> CreateOrder(CreateOrderRequest request)
+        public async Task<ApiResult<bool>> CreateOrder(string userId, CreateOrderRequest request)
         {
             var listDetailOrder = new List<OrderDetail>();
 
@@ -68,7 +68,7 @@ namespace linhkien_donet.Repository
 
             var order = new Order()
             {
-                UserId = request.UserId,
+                UserId = userId,
                 Total = request.Total,
                 Address = request.Address,
                 Phone = request.Phone,
@@ -80,7 +80,6 @@ namespace linhkien_donet.Repository
 
             _context.Order.AddAsync(order);
 
-            // sau khi đặt hàng xong sẽ - đi số lượng tồn của sản phẩm
             
             var result = await _context.SaveChangesAsync() > 0;
             return new ApiSuccessResult<bool>(result);
@@ -90,16 +89,20 @@ namespace linhkien_donet.Repository
         {
             try
             {
-                //var order = await _context.Order.FirstOrDefaultAsync(o=>o.Id == request.OrderId);
+                var order = await _context.Order.FirstOrDefaultAsync(o=>o.Id == request.OrderId);
 
-                //if(order == null)
-                //{
-                //    return new ApiFailResult<bool>("Order is not found");
-                //}
+                if (order == null)
+                {
+                    return new ApiFailResult<bool>("Order is not found");
+                };
 
-                //var userRole = _context.User.Role
+                order.Status = request.Status;
 
-                return new ApiSuccessResult<bool>("");
+
+                var result = await _context.SaveChangesAsync() > 0;
+
+
+                return new ApiSuccessResult<bool>(result);
             }
             catch (Exception ex)
             {

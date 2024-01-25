@@ -23,7 +23,6 @@ namespace _01_WEBAPI.Data
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new CartConfiguration());
-            //modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ImageConfiguration());
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
@@ -35,9 +34,6 @@ namespace _01_WEBAPI.Data
 
 
         }
-
-
-        //public DbSet<Account> Accounts { get; set; }
         public DbSet<ApplicationUser> User { get; set; }
         public DbSet<Brand> Brand { get; set; }
 

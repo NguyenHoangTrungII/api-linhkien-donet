@@ -21,13 +21,11 @@ namespace linhkien_donet.Controllers
         {
             _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
-
         }
 
         [HttpPatch("Avatar")]
         [Authorize(Roles = ("USER, ADMIN"))]
         [Consumes("multipart/form-data")]
-
         public async Task<IActionResult> UpdateAvatar([FromForm] UpdateAvatarModel request)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

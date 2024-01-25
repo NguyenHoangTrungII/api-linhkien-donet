@@ -5,7 +5,6 @@ namespace linhkien_donet.Entities
 {
     public class Cart
     {
-        [Key]
         public int Id { get; set; }
 
         public DateTime CreateDate { get; set; }

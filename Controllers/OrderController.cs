@@ -2,6 +2,7 @@
 using linhkien_donet.Models.OrderModels;
 using linhkien_donet.Models.PaymentModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -9,24 +10,27 @@ namespace linhkien_donet.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController :Controller
+    public class OrderController : Controller
     {
         private readonly IVnPayService _vnPayService;
         private readonly IOrderRepository _orderRepository;
+        private readonly ICartRepository _cartRepository;
 
-        public OrderController(IVnPayService vnPayService, IOrderRepository orderRepository = null)
+        [ActivatorUtilitiesConstructor]
+        public OrderController(IVnPayService vnPayService, IOrderRepository orderRepository, ICartRepository cartRepository)
         {
             _vnPayService = vnPayService;
             _orderRepository = orderRepository;
+            _cartRepository = cartRepository;
         }
 
         [HttpPost("paymentURL")]
         [Authorize(Roles ="USER")]
-        public IActionResult CreatePaymentUrl([FromBody] PaymentInformationModel model)
+        public IActionResult CreatePaymentUrl([FromBody] PaymentInformationModel model) 
         {
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
 
-            return Json(url);
+            return Ok(url);
         }
 
         [HttpGet("paymentCallback")]
@@ -36,7 +40,7 @@ namespace linhkien_donet.Controllers
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
 
-            return Json(response);
+            return Ok(response);
         }
 
         [HttpPost("createOrder")]
@@ -50,8 +54,18 @@ namespace linhkien_donet.Controllers
                 return BadRequest();
             }
 
+
             var result = await _orderRepository.CreateOrder(userId, request);
-            return Ok(request);
+
+            if(result.isSuccess == false)
+            {
+                return BadRequest();
+
+            }
+
+            var isDelete = await _cartRepository.RemoveAllItem(userId);
+
+            return Ok(isDelete);
         }
 
         [HttpPost("getOrder")]

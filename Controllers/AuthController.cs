@@ -84,7 +84,6 @@ namespace linhkien_donet.Controllers
         [HttpPost]
         [Route("make-admin")]
         [Authorize(Roles = "ADMIN, OWNER")]
-
         public async Task<IActionResult> MakeAdmin([FromBody] UpdatePermission updatePermissionDto)
         {
             var operationResult = await _authService.MakeAdminAsync(updatePermissionDto);

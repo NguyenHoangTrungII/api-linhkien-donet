@@ -27,19 +27,14 @@ namespace linhkien_donet.Repository
             _context = context;
             _mapper = mapper;
         }
-        public async Task<ApiResult<ProductDto>> AddToCart(AddToCartModel request)
+        public async Task<ApiResult<CartDetailDto>> AddToCart(AddToCartModel request)
         {
             try
             {
-                //var productExist = _mapper.Map<ProductDto>( await _context.Product
-                //    .Where(c => c.Id == request.ProductId)
-                //    .Include(p => p.Images.Where(i => i.IsThumbail == true)) 
-                //    .FirstOrDefaultAsync());
-
-                var productExist = _mapper.Map<ProductDto>( await _context.Product
+                var productExist =  await _context.Product
                 .Where(c => c.Id == request.ProductId)
                 .Include(p => p.Images.Where(i => i.IsThumbail == true))
-                .FirstOrDefaultAsync());
+                .FirstOrDefaultAsync();
 
                 if (productExist != null)
                 {
@@ -49,10 +44,11 @@ namespace linhkien_donet.Repository
 
                     productDto.Images = _mapper.Map<List<ImageDto>>(thumbnailImages);
 
+
                 }
                 else 
                 {
-                    return new ApiFailResult<ProductDto>("Product not exists");
+                    return new ApiFailResult<CartDetailDto>("Product not exists");
                 }
 
                 var cart = await _context.Cart.Include(c => c.Items).FirstOrDefaultAsync(c => c.UserId == request.UserId);
@@ -77,7 +73,8 @@ namespace linhkien_donet.Repository
                     cartItem = new CartDetail
                     {
                         ProductId = request.ProductId,
-                        Quantity = 1
+                        Quantity = 1,
+                        Product = productExist
                     };
 
                     cart.Items.Add(cartItem);
@@ -87,14 +84,17 @@ namespace linhkien_donet.Repository
                     cartItem.Quantity += 1;
                 }
 
+                var cartItemDto = _mapper.Map<CartDetailDto>(cartItem);
+
                 await _context.SaveChangesAsync();
 
 
-                return new ApiSuccessResult<ProductDto>(data: productExist);
+
+                return new ApiSuccessResult<CartDetailDto>(data: cartItemDto);
             }
             catch (Exception ex)
             {
-                return new ApiFailResult<ProductDto>("Add to Cart Failed" + ex.Message); ;
+                return new ApiFailResult<CartDetailDto>("Add to Cart Failed" + ex.Message); ;
             }
 
         }
@@ -165,7 +165,6 @@ namespace linhkien_donet.Repository
         {
             try
             {
-                // Tìm giỏ hàng của người dùng
                 var cart = await _context.Cart
                     .Include(c => c.Items)
                     .FirstOrDefaultAsync(c => c.UserId == request.UserId);
@@ -175,7 +174,6 @@ namespace linhkien_donet.Repository
                     return new ApiFailResult<bool>("Cart not found");
                 }
 
-                // Tìm mục trong giỏ hàng cần xóa
                 var cartItem = cart.Items.FirstOrDefault(item => item.ProductId == request.ProductId);
 
                 if (cartItem == null)
@@ -183,10 +181,8 @@ namespace linhkien_donet.Repository
                     return new ApiFailResult<bool>("Item not found in cart");
                 }
 
-                // Xóa mục khỏi giỏ hàng
                 cart.Items.Remove(cartItem);
 
-                // Lưu thay đổi vào cơ sở dữ liệu
                 await _context.SaveChangesAsync();
                 return new ApiSuccessResult<bool>("Remove Item Sucess");
             }
@@ -218,6 +214,26 @@ namespace linhkien_donet.Repository
                 return new ApiFailResult<CartDto>(ex.Message);
             }
         }
+
+        public async Task<ApiResult<bool>> RemoveAllItem(string userId)
+        {
+            var cart = await _context.Cart
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null)
+            {
+                return new ApiFailResult<bool>("No cart found");
+
+            }
+
+            var cartDetail = await _context.CartsDetail.Where(c => c.CartId == cart.Id).ToArrayAsync();
+
+            _context.CartsDetail.RemoveRange(cartDetail);
+            var result = await _context.SaveChangesAsync() > 0;
+            return new ApiSuccessResult<bool>(result);
+
+        }
+
 
 
     }

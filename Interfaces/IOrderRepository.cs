@@ -1,4 +1,5 @@
 ﻿using _01_WEBAPI.Helper.ApiResults;
+using linhkien_donet.Dto;
 using linhkien_donet.Entities;
 using linhkien_donet.Helper.ApiResults;
 using linhkien_donet.Models.OrderModels;
@@ -22,7 +23,7 @@ namespace linhkien_donet.Interfaces
         Task<ApiResult<bool>> UpdateStatusOrder(UpdateStatusOrderRequest request );
 
 
-        Task<PagingApi<List<Order>>> getOrderPaging(PagingOrderRequest request, string userId);
+        Task<PagingApi<List<OrderDto>>> getOrderPaging(PagingOrderRequest request, string userId);
 
 
     }

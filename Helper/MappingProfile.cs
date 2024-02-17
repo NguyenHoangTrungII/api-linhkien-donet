@@ -31,6 +31,9 @@ namespace _01_WEBAPI.Helper
             CreateMap<CartDetailDto, Cart>();
             CreateMap<Cart, CartDetailDto>();
 
+
+            
+
             CreateMap<Product, CartDetailDto>()
                 .ForMember(dest => dest.Product, opt => opt.MapFrom(src => _mapper.Map<ProductDto>(src)));
             //CreateMap<Cart, CartDto>()
@@ -45,9 +48,13 @@ namespace _01_WEBAPI.Helper
             CreateMap<Cart, CartDto>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
 
-          
 
 
+            CreateMap<OrderDto, Order>();
+            CreateMap<Order, OrderDto>();
+
+            CreateMap<OrderDetailDto, OrderDetail>();
+            CreateMap<OrderDetail, OrderDetailDto>();
 
         }
     }

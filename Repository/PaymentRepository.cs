@@ -3,18 +3,17 @@ using _01_WEBAPI.Helper.ApiResults;
 using linhkien_donet.Entities;
 using linhkien_donet.Interfaces;
 using linhkien_donet.Models.PaymentModels;
+using linhkien_donet.Services;
 
 namespace linhkien_donet.Repository
 {
     public class PaymentRepository : IPaymentRepository
     {
         private readonly DataContext _context;
-        
 
-        public PaymentRepository(DataContext context)
+        public PaymentRepository(DataContext context )
         {
             _context = context;
-            
         }
 
         public async Task<ApiResult<bool>> CreatePayment(PaymentResponseModel request)
@@ -46,6 +45,13 @@ namespace linhkien_donet.Repository
                 return new ApiFailResult<bool>(ex.Message);
             }
         }
+
+        //public async Task<ApiResult<bool>> CreatePaymentUrl(PaymentInformationModel request, HttpContext context)
+        //{
+        //    var url =  _vpnPayService.CreatePaymentUrl(request, context);
+
+        //    return new ApiSuccessResult<bool>(url);
+        //}
 
     }
 }

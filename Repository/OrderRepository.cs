@@ -1,5 +1,8 @@
 ﻿using _01_WEBAPI.Data;
+using _01_WEBAPI.Dto;
 using _01_WEBAPI.Helper.ApiResults;
+using AutoMapper;
+using linhkien_donet.Dto;
 using linhkien_donet.Entities;
 using linhkien_donet.Helper.ApiResults;
 using linhkien_donet.Interfaces;
@@ -16,12 +19,15 @@ namespace linhkien_donet.Repository
         private readonly DataContext _context;
         private readonly IVnPayService _vnPayService;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IMapper _mapper;
 
-        public OrderRepository(IVnPayService vnPayService, IPaymentRepository paymentRepository, DataContext context)
+
+        public OrderRepository(IVnPayService vnPayService, IPaymentRepository paymentRepository, DataContext context, IMapper mapper)
         {
             _vnPayService = vnPayService;
             _paymentRepository = paymentRepository;
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<ApiResult<bool>> InitiatePaymentAndGetRedirectUrl(PaymentInformationModel paymentInfo, HttpContext context)
@@ -40,7 +46,7 @@ namespace linhkien_donet.Repository
 
         public async Task<ApiResult<bool>> ProcessVNPayReturn(PaymentResponseModel response)
         {
-            _paymentRepository.CreatePayment(response);
+            await _paymentRepository.CreatePayment(response);
 
             if (response.Success)
             {
@@ -111,10 +117,10 @@ namespace linhkien_donet.Repository
         }
 
 
-        public async Task<PagingApi<List<Order>>> getOrderPaging(PagingOrderRequest request, string userId)
+        public async Task<PagingApi<List<OrderDto>>> getOrderPaging(PagingOrderRequest request, string userId)
         {
 
-            var query = from o in _context.Order  
+            var query =  from o in _context.Order  
                         orderby o.CreatedDate descending
                         select new { o };
 
@@ -142,7 +148,7 @@ namespace linhkien_donet.Repository
                 query = query.Skip(((request.PageIndex - 1) * request.PageSize)).Take(request.PageSize).OrderByDescending(x => x.o.CreatedDate);
             }
 
-            var listOrders = await query.Select(x => new Order()
+            var listOrders = await query.Select(x => new OrderDto()
             {
                 Id = x.o.Id,
                 Total = x.o.Total,
@@ -151,22 +157,25 @@ namespace linhkien_donet.Repository
                 Status = x.o.Status.ToString(),
                 CreatedDate = x.o.CreatedDate,
                 //Note = x.o.Note,
-                OrderDetails = listOrderDetails.Where(a => a.od.OrderId == x.o.Id).Select(q => new OrderDetail()
+                OrderDetails = listOrderDetails.Where(a => a.od.OrderId == x.o.Id).Select(q => new OrderDetailDto()
                 {
                     OrderId = x.o.Id,
-                    ProductId = q.od.ProductId,
-                    Product = q.p,
+                    Product = _mapper.Map<ProductDto>(q.p),
                     Price = q.od.Price,
                     Quantity = q.od.Quantity,
-                    
+
                 }).ToList()
             }).ToListAsync();
+
+
+
+
 
 
             int totalRecord = await query.CountAsync();
             double totalPage = Math.Ceiling((double)totalRecordAll / request.PageSize);
 
-            return new PagingSuccessResult<List<Order>>(totalRecordAll, totalPage, totalRecord, request.PageSize, request.PageIndex, listOrders);
+            return new PagingSuccessResult<List<OrderDto>>(totalRecordAll, totalPage, totalRecord, request.PageSize, request.PageIndex, data: listOrders );
         }
 
        

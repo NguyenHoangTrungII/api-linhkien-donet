@@ -49,13 +49,13 @@ namespace linhkien_donet.Controllers
         [HttpPost("addToCart/{productId}")]
         [Authorize(Roles = ("USER"))]
 
-        public async Task<IActionResult> AddToCart([FromRoute] int ProductId)
+        public async Task<IActionResult> AddToCart([FromRoute] int productId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var request = new AddToCartModel
             {
-                ProductId = ProductId,
+                ProductId = productId,
                 UserId = userId
             };
 
@@ -113,6 +113,24 @@ namespace linhkien_donet.Controllers
             };
 
             var result = await _cartRepository.RemoveItemFromCart(request);
+
+            if (result.isSuccess)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
+        [HttpDelete("items")]
+        [Authorize(Roles = "USER, ADMIN")]
+        public async Task<IActionResult> RemoveAllItems()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            
+
+            var result = await _cartRepository.RemoveAllItem(userId);
 
             if (result.isSuccess)
             {

@@ -9,10 +9,13 @@ namespace linhkien_donet.Interfaces
     public interface ICartRepository
     {
         Task<ApiResult<CartDto>> GetCart(string UserId);
-        Task<ApiResult<ProductDto>> AddToCart(AddToCartModel request);
+        Task<ApiResult<CartDetailDto>> AddToCart(AddToCartModel request);
 
         Task<ApiResult<CartDetailDto>> UpdateCart(UpdateCartModel request);
         Task<ApiResult<bool>> RemoveItemFromCart(AddToCartModel request);
+
+        Task<ApiResult<bool>> RemoveAllItem(string UserId);
+
 
     }
 }

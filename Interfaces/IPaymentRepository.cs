@@ -8,5 +8,8 @@ namespace linhkien_donet.Interfaces
 
         Task<ApiResult<bool>> CreatePayment(PaymentResponseModel request);
 
+        //Task<ApiResult<bool>> CreatePaymentUrl(PaymentInformationModel request, HttpContext context);
+
+
     }
 }

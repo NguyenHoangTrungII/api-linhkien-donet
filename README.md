@@ -4,6 +4,8 @@
 
 
 ## Documentation
+* [About project](#about-project)
+* [Technical details](#technical-details)
 
 
 
@@ -28,3 +30,8 @@ yarn install
 # run project
 npm start
 ```
+  
+## :star: Technical details
+- Language: C#.
+- Framework: dot Net core 7.
+- Techncial + others: 

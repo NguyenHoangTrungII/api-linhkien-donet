@@ -4,14 +4,7 @@
 
 
 ## Documentation
-* [About project](#about-project)
 * [Technical details](#technical-details)
-
-
-
-## About project
-## :star: Get Started
-
   
 ## :star: Technical details
 - Language: C#.
